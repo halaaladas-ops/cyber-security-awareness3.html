@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>تحدي كلمة السر - Cyber Awareness</title>
+<style>
+  body{font-family:"Segoe UI",Tahoma,sans-serif;direction:rtl;background:#f5f5f5;padding:20px}
+  .container{max-width:600px;margin:auto;background:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+  h1{text-align:center}
+  label{display:block;margin-top:10px;font-weight:600}
+  input{width:100%;padding:10px;border-radius:6px;border:1px solid #ccc;font-size:16px}
+  .rules{margin-top:12px}
+  .rule{padding:8px;border:1px solid #ddd;border-radius:6px;margin-top:6px}
+  .good{background:#e8f5e9;border-color:#2e7d32;color:#2e7d32}
+  .bad{background:#ffebee;border-color:#c62828;color:#c62828}
+  button{margin-top:14px;width:100%;padding:12px;border:0;border-radius:6px;background:#1976d2;color:#fff;font-size:16px}
+  button:disabled{background:#aaa;cursor:not-allowed}
+  .timer{text-align:center;font-size:18px;margin-top:15px;font-weight:bold}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>⏱️ تحدي كلمة السر القوية</h1>
+    <label for="pw">أدخل كلمة السر</label>
+    <input id="pw" type="password" placeholder="اكتب كلمة السر هنا..." oninput="checkPassword()" />
+
+    <div class="rules">
+      <div class="rule bad" id="r-length">✕ لا تقل عن 8 أحرف</div>
+      <div class="rule bad" id="r-upper">✕ حرف كبير واحد على الأقل (A-Z)</div>
+      <div class="rule bad" id="r-lower">✕ حرف صغير (a-z)</div>
+      <div class="rule bad" id="r-digit">✕ رقم واحد على الأقل (0-9)</div>
+      <div class="rule bad" id="r-symbol">✕ رمز واحد على الأقل (!@#$%^&*)</div>
+    </div>
+
+    <button id="checkBtn" disabled>تحقق</button>
+    <div class="timer">الوقت المتبقي: <span id="time">15</span> ثانية</div>
+  </div>
+
+<script>
+  const pw = document.getElementById('pw');
+  const btn = document.getElementById('checkBtn');
+
+  function checkPassword(){
+    const val = pw.value;
+    const rules = {
+      length: val.length >= 8,
+      upper: /[A-Z]/.test(val),
+      lower: /[a-z]/.test(val),
+      digit: /\d/.test(val),
+      symbol: /[!@#\$%\^&\*\(\)\[\]\{\}\-_+=;:'",.<>\/\\\?]/.test(val)
+    };
+
+    let all = true;
+    for (const key in rules){
+      const el = document.getElementById('r-'+key);
+      if(rules[key]){
+        el.className = "rule good";
+        el.textContent = "✓ " + el.textContent.replace(/^✕|✓/,"");
+      } else {
+        el.className = "rule bad";
+        el.textContent = "✕ " + el.textContent.replace(/^✕|✓/,"");
+        all = false;
+      }
+    }
+    btn.disabled = !all;
+  }
+
+  btn.addEventListener('click', ()=>{
+    alert("🎉 مبروك الفوز! كلمة السر قوية ✅");
+  });
+
+  // مؤقت 15 ثانية
+  let timeLeft = 15;
+  const timerEl = document.getElementById('time');
+  const countdown = setInterval(()=>{
+    timeLeft--;
+    timerEl.textContent = timeLeft;
+    if(timeLeft <= 0){
+      clearInterval(countdown);
+      btn.disabled = true;
+      pw.disabled = true;
+      alert("⏰ انتهى الوقت!");
+    }
+  },1000);
+</script>
+</body>
+</html>
